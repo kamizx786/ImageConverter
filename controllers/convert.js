@@ -35,6 +35,7 @@ export const ConverttoJPG = async (req, res) => {
           res.json({
             public_id: data.public_id,
             url: data.secure_url,
+            status:true
           });
         }
       });
@@ -42,6 +43,8 @@ export const ConverttoJPG = async (req, res) => {
     console.log(error);
     return res.json({
       error: "Image Conversion and Upload Error",
+      status:false
+     
     });
   }
 };
@@ -68,6 +71,7 @@ export const ConverttoPNG = async (req, res) => {
           res.json({
             public_id: data.public_id,
             url: data.secure_url,
+            status:true
           });
         }
       });
@@ -75,6 +79,7 @@ export const ConverttoPNG = async (req, res) => {
     console.log(error);
     return res.json({
       error: "Image Conversion and Upload Error",
+      status:false
     });
   }
 };
@@ -101,6 +106,7 @@ export const ConverttoGIF = async (req, res) => {
           res.json({
             public_id: data.public_id,
             url: data.secure_url,
+            status:true
           });
         }
       });
@@ -108,6 +114,7 @@ export const ConverttoGIF = async (req, res) => {
     console.log(error);
     return res.json({
       error: "Image Conversion and Upload Error",
+      status:false
     });
   }
 };
@@ -134,6 +141,7 @@ export const ConverttoAVIF = async (req, res) => {
           res.json({
             public_id: data.public_id,
             url: data.secure_url,
+            status:true
           });
         }
       });
@@ -141,6 +149,7 @@ export const ConverttoAVIF = async (req, res) => {
     console.log(error);
     return res.json({
       error: "Image Conversion and Upload Error",
+      status:false
     });
   }
 };
@@ -167,6 +176,7 @@ export const ConverttoTIFF = async (req, res) => {
           res.json({
             public_id: data.public_id,
             url: data.secure_url,
+            status:true
           });
         }
       });
@@ -174,6 +184,7 @@ export const ConverttoTIFF = async (req, res) => {
     console.log(error);
     return res.json({
       error: "Image Conversion and Upload Error",
+      status:false
     });
   }
 };
@@ -200,6 +211,7 @@ export const ConverttoWEBP = async (req, res) => {
           res.json({
             public_id: data.public_id,
             url: data.secure_url,
+            status:true
           });
         }
       });
@@ -207,6 +219,7 @@ export const ConverttoWEBP = async (req, res) => {
     console.log(error);
     return res.json({
       error: "Image Conversion and Upload Error",
+      status:false
     });
   }
 };
@@ -243,6 +256,7 @@ export const ConverttoSVG = async (req,res,next) => {
         res.json({
           public_id: data.public_id,
           url: data.secure_url,
+          status:true
         });
       }
     });
@@ -251,6 +265,7 @@ export const ConverttoSVG = async (req,res,next) => {
     console.log(error);
     return res.json({
       error: "Image Conversion and Upload Error",
+      status:false
     });
   }
 };
@@ -281,6 +296,7 @@ export const ConvertAVIFtoSVG=async(req,res)=>{
               res.json({
                 public_id: data.public_id,
                 url: data.secure_url,
+                status:true
               });
             }
           });
@@ -290,6 +306,7 @@ export const ConvertAVIFtoSVG=async(req,res)=>{
     console.log(error);
     return res.json({
       error: "Image Conversion and Upload Error",
+      status:false
     });
   }
 }
@@ -320,6 +337,7 @@ export const ConvertWEBPtoSVG=async(req,res)=>{
               res.json({
                 public_id: data.public_id,
                 url: data.secure_url,
+                status:true
               });
             }
           });
@@ -329,6 +347,7 @@ export const ConvertWEBPtoSVG=async(req,res)=>{
     console.log(error);
     return res.json({
       error: "Image Conversion and Upload Error",
+      status:false
     });
   }
 }
@@ -361,6 +380,7 @@ export const ConverttoICO=async(req,res)=>{
               res.json({
                 public_id: data.public_id,
                 url: data.secure_url,
+                status:true
               });
         }
       })
@@ -372,6 +392,7 @@ export const ConverttoICO=async(req,res)=>{
     console.log(error);
     return res.json({
       error: "Image Conversion and Upload Error",
+      status:false
     });
   }
 }
