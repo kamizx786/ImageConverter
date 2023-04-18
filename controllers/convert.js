@@ -11,6 +11,8 @@ cloudinary.config({
   api_key: process.env.Cloud_key,
   api_secret: process.env.Cloud_Secret,
 });
+
+
 export const ConverttoJPG = async (req, res) => {
   if (!req.files.image)
     return res.status(400).send("Please Add Image to Convert");
@@ -22,15 +24,16 @@ export const ConverttoJPG = async (req, res) => {
           console.error(err);
         } else {
           const tempFilePath = path.join("uploads", `${Date.now()}.jpg`);
-          await fs.promises.writeFile(tempFilePath, buffer);
+          fs.writeFileSync(tempFilePath, buffer);
           // Upload the temporary file to Cloudinary
-          const data =await cloudinary.uploader.upload(tempFilePath, {
+          const data = await cloudinary.uploader.upload(tempFilePath, {
             resource_type: "auto",
             public_id: `${Date.now()}`,
           });
-          console.log(data.public_id)
+
           // Remove the temporary file
-          await fs.promises.unlink(tempFilePath);
+          fs.unlinkSync(tempFilePath);
+          
           res.json({
             public_id: data.public_id,
             url: data.secure_url,
@@ -47,44 +50,6 @@ export const ConverttoJPG = async (req, res) => {
     });
   }
 };
-
-// export const ConverttoJPG = async (req, res) => {
-//   if (!req.files.image)
-//     return res.status(400).send("Please Add Image to Convert");
-//   try {
-//     sharp(req.files.image.path)
-//       .toFormat("jpg")
-//       .toBuffer(async (err, buffer) => {
-//         if (err) {
-//           console.error(err);
-//         } else {
-//           const tempFilePath = path.join("uploads", `${Date.now()}.jpg`);
-//           fs.writeFileSync(tempFilePath, buffer);
-//           // Upload the temporary file to Cloudinary
-//           const data = await cloudinary.uploader.upload(tempFilePath, {
-//             resource_type: "auto",
-//             public_id: `${Date.now()}`,
-//           });
-
-//           // Remove the temporary file
-//           fs.unlinkSync(tempFilePath);
-          
-//           res.json({
-//             public_id: data.public_id,
-//             url: data.secure_url,
-//             status:true
-//           });
-//         }
-//       });
-//   } catch (error) {
-//     console.log(error);
-//     return res.json({
-//       error: "Image Conversion and Upload Error",
-//       status:false
-     
-//     });
-//   }
-// };
 export const ConverttoPNG = async (req, res) => {
   if (!req.files.image)
     return res.status(400).send("Please Add Image to Convert");
