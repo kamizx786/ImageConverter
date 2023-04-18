@@ -16,7 +16,9 @@ const app = express()
 app.use(morgan("dev"))
 //resolve Frontend and Backend
 app.use(cors({
-    origin:"http://localhost:3000"
+    origin:["http://localhost:3000",
+"https://img-converter.vercel.app"
+]
 }))
 //Request Limit
 app.use(bodyparser.json({limit:"20mb"}))
