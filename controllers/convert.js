@@ -69,7 +69,7 @@ export const ConverttoPNG = async (req, res) => {
           });
 
           // Remove the temporary file
-          fs.unlinkSync(tempFilePath);
+         
           res.json({
             public_id: data.public_id,
             url: data.secure_url,
