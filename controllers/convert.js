@@ -23,13 +23,13 @@ export const ConverttoJPG = async (req, res) => {
     ||req.files.image.type==="application/octet-stream")
     {
       const inputBuffer = fs.readFileSync(req.files.image.path);
-      heicConvert({
-        buffer: inputBuffer,
-        format: 'JPEG'
-      }).then(async(outputBuffer) => {
-        // Resize and reduce the color depth of the output PNG image
+      const outputBuffer = await heicConvert({
+        buffer: inputBuffer, // the HEIC file buffer
+        format: 'JPEG',      // output format
+        quality: 0         // the jpeg compression quality, between 0 and 1
+      });
         sharp(outputBuffer)
-          .jpeg({ quality: 100, colors: 256 })
+          .jpeg({ quality: 80, colors: 256 })
           .toBuffer(async (err, buffer) => {
             if (err) {
               console.error(err);
@@ -52,7 +52,6 @@ export const ConverttoJPG = async (req, res) => {
               });
             }
           });
-      })
       setInterval(() => {
         const memoryUsage = process.memoryUsage();
         console.log(`Heap used: ${memoryUsage.heapUsed / 1024 / 1024} MB`);
@@ -81,11 +80,6 @@ export const ConverttoJPG = async (req, res) => {
             url: data.secure_url,
             status:true
           });
-          setInterval(() => {
-            const memoryUsage = process.memoryUsage();
-            console.log(`Heap used: ${memoryUsage.heapUsed / 1024 / 1024} MB`);
-            console.log(`Heap total: ${memoryUsage.heapTotal / 1024 / 1024} MB`);
-          }, 1000);
         }
       });
     }
