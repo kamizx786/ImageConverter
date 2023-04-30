@@ -29,7 +29,6 @@ export const ConverttoJPG = async (req, res) => {
       }).then(async(outputBuffer) => {
         // Resize and reduce the color depth of the output PNG image
         sharp(outputBuffer)
-          .resize({ width: 1024 })
           .jpeg({ quality: 100, colors: 256 })
           .toBuffer(async (err, buffer) => {
             if (err) {
@@ -105,7 +104,6 @@ export const ConverttoPNG = async (req, res) => {
       }).then((outputBuffer) => {
         // Resize and reduce the color depth of the output PNG image
         return sharp(outputBuffer)
-          .resize({ width: 1024 })
           .png({ quality: 100, colors: 256 })
           .toBuffer(async (err, buffer) => {
             if (err) {
