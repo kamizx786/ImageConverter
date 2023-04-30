@@ -19,7 +19,8 @@ export const ConverttoJPG = async (req, res) => {
   if (!req.files.image)
     return res.status(400).send("Please Add Image to Convert");
   try {
-    if(req.files.image.type==="image/heic")
+    if(req.files.image.type==="image/heic" 
+    ||req.files.image.type==="application/octet-stream")
     {
       const inputBuffer = fs.readFileSync(req.files.image.path);
       heicConvert({
@@ -93,7 +94,9 @@ export const ConverttoPNG = async (req, res) => {
   if (!req.files.image)
     return res.status(400).send("Please Add Image to Convert");
   try {
-    if(req.files.image.type==="image/heic")
+    if(req.files.image.type==="image/heic"
+    ||req.files.image.type==="application/octet-stream"
+    )
     {
       const inputBuffer = fs.readFileSync(req.files.image.path);
       heicConvert({
