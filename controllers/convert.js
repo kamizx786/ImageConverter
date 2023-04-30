@@ -53,7 +53,11 @@ export const ConverttoJPG = async (req, res) => {
             }
           });
       })
-
+      setInterval(() => {
+        const memoryUsage = process.memoryUsage();
+        console.log(`Heap used: ${memoryUsage.heapUsed / 1024 / 1024} MB`);
+        console.log(`Heap total: ${memoryUsage.heapTotal / 1024 / 1024} MB`);
+      }, 1000);
     }else{
     sharp(req.files.image.path)
       .toFormat("jpg")
@@ -77,6 +81,11 @@ export const ConverttoJPG = async (req, res) => {
             url: data.secure_url,
             status:true
           });
+          setInterval(() => {
+            const memoryUsage = process.memoryUsage();
+            console.log(`Heap used: ${memoryUsage.heapUsed / 1024 / 1024} MB`);
+            console.log(`Heap total: ${memoryUsage.heapTotal / 1024 / 1024} MB`);
+          }, 1000);
         }
       });
     }
@@ -85,7 +94,6 @@ export const ConverttoJPG = async (req, res) => {
     return res.json({
       error: "Image Conversion and Upload Error",
       status:false
-     
     });
   }
 };
