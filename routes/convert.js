@@ -2,7 +2,9 @@ import express from "express"
 const router=express.Router();
 import {ConvertAVIFtoSVG, ConvertWEBPtoSVG, ConverttoAVIF, ConverttoGIF, ConverttoICO, ConverttoJPG, ConverttoPNG, ConverttoSVG, ConverttoTIFF, ConverttoWEBP} from "../controllers/convert";
 import formidable from "express-formidable";
-
+router.post("/test",(req,res)=>{
+res.json("Hello");
+})
 router.post("/convert-to-jpg",formidable({maxFileSize: 5 * 1024 * 1024}),ConverttoJPG);
 router.post("/convert-to-png",formidable({maxFileSize: 5 * 1024 * 1024}),ConverttoPNG);
 router.post("/convert-to-gif",formidable({maxFileSize:5*1024*1024}),ConverttoGIF);
