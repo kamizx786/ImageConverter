@@ -4,6 +4,8 @@ const path = require("path");
 const potrace=require("potrace");
 const pngToIco = require('png-to-ico');
 import cloudinary from "cloudinary";
+const heicConvert = require('heic-convert');
+
 require("dotenv").config();
 
 cloudinary.config({
@@ -17,6 +19,42 @@ export const ConverttoJPG = async (req, res) => {
   if (!req.files.image)
     return res.status(400).send("Please Add Image to Convert");
   try {
+    if(req.files.image.type==="image/heic")
+    {
+      const inputBuffer = fs.readFileSync(req.files.image.path);
+      heicConvert({
+        buffer: inputBuffer,
+        format: 'JPEG'
+      }).then(async(outputBuffer) => {
+        // Resize and reduce the color depth of the output PNG image
+        sharp(outputBuffer)
+          .resize({ width: 1024 })
+          .jpeg({ quality: 100, colors: 256 })
+          .toBuffer(async (err, buffer) => {
+            if (err) {
+              console.error(err);
+            } else {
+              const tempFilePath = path.join("uploads", `${Date.now()}.jpg`);
+              fs.writeFileSync(tempFilePath, buffer);
+              // Upload the temporary file to Cloudinary
+              const data = await cloudinary.uploader.upload(tempFilePath, {
+                resource_type: "auto",
+                public_id: `${Date.now()}`,
+              });
+    
+              // Remove the temporary file
+              fs.unlinkSync(tempFilePath);
+              
+              res.json({
+                public_id: data.public_id,
+                url: data.secure_url,
+                status:true
+              });
+            }
+          });
+      })
+
+    }else{
     sharp(req.files.image.path)
       .toFormat("jpg")
       .toBuffer(async (err, buffer) => {
@@ -41,6 +79,7 @@ export const ConverttoJPG = async (req, res) => {
           });
         }
       });
+    }
   } catch (error) {
     console.log(error);
     return res.json({
@@ -54,6 +93,41 @@ export const ConverttoPNG = async (req, res) => {
   if (!req.files.image)
     return res.status(400).send("Please Add Image to Convert");
   try {
+    if(req.files.image.type==="image/heic")
+    {
+      const inputBuffer = fs.readFileSync(req.files.image.path);
+      heicConvert({
+        buffer: inputBuffer,
+        format: 'PNG'
+      }).then((outputBuffer) => {
+        // Resize and reduce the color depth of the output PNG image
+        return sharp(outputBuffer)
+          .resize({ width: 1024 })
+          .png({ quality: 100, colors: 256 })
+          .toBuffer(async (err, buffer) => {
+            if (err) {
+              console.error(err);
+            } else {
+              const tempFilePath = path.join("uploads", `${Date.now()}.png`);
+              fs.writeFileSync(tempFilePath, buffer);
+              // Upload the temporary file to Cloudinary
+              const data = await cloudinary.uploader.upload(tempFilePath, {
+                resource_type: "auto",
+                public_id: `${Date.now()}`,
+              });
+    
+              // Remove the temporary file
+              fs.unlinkSync(tempFilePath);
+              res.json({
+                public_id: data.public_id,
+                url: data.secure_url,
+                status:true
+              });
+            }
+          });
+      })
+  
+    }else{
     sharp(req.files.image.path)
       .toFormat("png")
       .toBuffer(async (err, buffer) => {
@@ -69,7 +143,7 @@ export const ConverttoPNG = async (req, res) => {
           });
 
           // Remove the temporary file
-         
+          fs.unlinkSync(tempFilePath);
           res.json({
             public_id: data.public_id,
             url: data.secure_url,
@@ -77,6 +151,7 @@ export const ConverttoPNG = async (req, res) => {
           });
         }
       });
+    }
   } catch (error) {
     console.log(error);
     return res.json({
@@ -390,6 +465,48 @@ export const ConverttoICO=async(req,res)=>{
     .catch((err) => {
       console.error(err);
     });
+  } catch (error) {
+    console.log(error);
+    return res.json({
+      error: "Image Conversion and Upload Error",
+      status:false
+    });
+  }
+}
+
+export const ConverttoHEIC=async(req,res)=>{
+  try {
+    sharp(req.files.image.path)
+      .toFormat("png")
+      .toBuffer(async (err, buffer) => {
+        if (err) {
+          console.error(err);
+        } else {
+          potrace.trace(buffer, async (err, svg) => {
+            if (err) {
+              console.error(err);
+            } else {
+              // Write the output SVG file
+              const tempFilePath = path.join("uploads", `${Date.now()}.svg`);
+              fs.writeFileSync(tempFilePath, svg);
+              console.log("Image converted to SVG format!");
+              // Upload the temporary file to Cloudinary
+              const data = await cloudinary.uploader.upload(tempFilePath, {
+                resource_type: "auto",
+                public_id: `${Date.now()}`,
+              });
+      
+              // Remove the temporary file
+              fs.unlinkSync(tempFilePath);
+              res.json({
+                public_id: data.public_id,
+                url: data.secure_url,
+                status:true
+              });
+            }
+          });
+        }
+      });
   } catch (error) {
     console.log(error);
     return res.json({
