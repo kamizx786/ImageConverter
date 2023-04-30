@@ -21,7 +21,7 @@ app.use(cors({
 ]
 }))
 //Request Limit
-app.use(bodyparser.json({limit:"20mb"}))
+// app.use(bodyparser.json({limit:"20mb"}))
 //Routes
 fs.readdirSync("./routes").map((r)=>app.use("/api", require(`./routes/${r}`)));
 
