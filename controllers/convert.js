@@ -14,7 +14,82 @@ cloudinary.config({
   api_secret: process.env.Cloud_Secret,
 });
 
+export const ConverttoJPEG = async (req, res) => {
+  if (!req.files.image)
+    return res.status(400).send("Please Add Image to Convert");
+  try {
+    if(req.files.image.type==="image/heic" 
+    ||req.files.image.type==="application/octet-stream")
+    {
+      const inputBuffer = fs.readFileSync(req.files.image.path);
+      const outputBuffer = await heicConvert({
+        buffer: inputBuffer, // the HEIC file buffer
+        format: 'JPEG',      // output format
+        quality: 0         // the jpeg compression quality, between 0 and 1
+      });
+        sharp(outputBuffer)
+          .jpeg({ quality: 80, colors: 256 })
+          .toBuffer(async (err, buffer) => {
+            if (err) {
+              console.error(err);
+            } else {
+              const tempFilePath = path.join("uploads", `${Date.now()}.jpeg`);
+              fs.writeFileSync(tempFilePath, buffer);
+              // Upload the temporary file to Cloudinary
+              const data = await cloudinary.uploader.upload(tempFilePath, {
+                resource_type: "auto",
+                public_id: `${Date.now()}`,
+              });
+    
+              // Remove the temporary file
+              fs.unlinkSync(tempFilePath);
+              
+              res.json({
+                public_id: data.public_id,
+                url: data.secure_url,
+                status:true
+              });
+            }
+          });
+      // setInterval(() => {
+      //   const memoryUsage = process.memoryUsage();
+      //   console.log(`Heap used: ${memoryUsage.heapUsed / 1024 / 1024} MB`);
+      //   console.log(`Heap total: ${memoryUsage.heapTotal / 1024 / 1024} MB`);
+      // }, 1000);
+    }else{
+    sharp(req.files.image.path)
+      .toFormat("jpeg")
+      .toBuffer(async (err, buffer) => {
+        if (err) {
+          console.error(err);
+        } else {
+          const tempFilePath = path.join("uploads", `${Date.now()}.jpeg`);
+          fs.writeFileSync(tempFilePath, buffer);
+          // Upload the temporary file to Cloudinary
+          const data = await cloudinary.uploader.upload(tempFilePath, {
+            resource_type: "auto",
+            public_id: `${Date.now()}`,
+          });
 
+          // Remove the temporary file
+          fs.unlinkSync(tempFilePath);
+          
+          res.json({
+            public_id: data.public_id,
+            url: data.secure_url,
+            status:true
+          });
+        }
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.json({
+      error: "Image Conversion and Upload Error",
+      status:false
+    });
+  }
+};
 export const ConverttoJPG = async (req, res) => {
   if (!req.files.image)
     return res.status(400).send("Please Add Image to Convert");
@@ -206,7 +281,7 @@ export const ConverttoAVIF = async (req, res) => {
       .toFormat("avif")
       .toBuffer(async (err, buffer) => {
         if (err) {
-          console.error(err);
+         console.log(err);
         } else {
           const tempFilePath = path.join("uploads", `${Date.now()}.avif`);
           fs.writeFileSync(tempFilePath, buffer);
