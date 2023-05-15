@@ -17,7 +17,8 @@ app.use(morgan("dev"))
 //resolve Frontend and Backend
 app.use(cors({
     origin:["http://localhost:3000",
-"https://img-converter.vercel.app"
+"https://img-converter.vercel.app",
+"https://www.converterzu.com",
 ]
 }))
 //Request Limit
